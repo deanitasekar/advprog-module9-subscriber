@@ -25,5 +25,9 @@ Untuk simulasi slow subscriber, saya menjalankan perintah `cargo run` sebanyak 2
 ## Running at least three subscribers:
 ![3 subscribers rabbit](images/subscriber_rabbit.png)
 ![3 subscribers console](images/subscriber_console.png)
-# Analisis Multiple Subscribers
+
 Grafik menunjukkan sistem meiliki 3 konsumen dan 2 antrean. Saat saya menjalankan publisher beberapa kali dengan `cargo run`, terjadi lonjakan hingga 20 pesan, tetapi menurun secara cepat karena terdapat 3 subscriber yang bekerja secara paralel. Aktivitas pengiriman mencapai 4.0/s sementara konsumsi sekitar 3.0/s, menjelaskan mengapa beberapa pesan tertahan sejenak di antrean. Meskipun terdapat `thread::sleep` yang memperlambat subscriber, mekanisme load balancing membuat pemrosesan tetap efisien sehingga mengurangi penumpukan di antrean.
+
+Potensi perbaikan: 
+- Implementasi mekanisme acknowledgment yang lebih baik untuk memastikan pesan terproses dengan benar.
+- Menerapkan batasan jumlah pesan (prefetch count) untuk setiap subscriber agar beban tetap seimbang.
