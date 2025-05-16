@@ -21,3 +21,9 @@ Secara ringkas, URL ini berarti kita sedang terhubung ke AMQP message broker men
 ## Simulation slow subscriber:
 ![Slow subscriber](images/slow_subscriber.png)
 Untuk simulasi slow subscriber, saya menjalankan perintah `cargo run` sebanyak 2 kali secara cepat. Grafik pada RabbitMQ menujukkan queues 2 yang merepresentasikan jumlah antrean aktif, dengan nilai ready 8 dan unacked 6 yang menunjukkan pesan tertahan dalam antrean. Terjadi proses perlambatan pemrosesan pesan dalam antrean karena penambahan `thread::sleep` pada subscriber. Ketika saya menjalankan publisher beberapa kali dengan `cargo run`, pesan dikirim dengan cepat ke dalam antrean, sementara subscriber tidak mampu memprosesnya dengan kecepatan yang sama. Akibatnya, terjadi ketidakseimbangan antara laju pengiriman dan pemrosesan, menyebabkan akumulasi pesan dalam status ready dan unacked meskipun jumlah antrean tetap 2.
+
+## Running at least three subscribers:
+![3 subscribers rabbit](images/subscriber_rabbit.png)
+![3 subscribers console](images/subscriber_console.png)
+# Analisis Multiple Subscribers
+Grafik menunjukkan sistem meiliki 3 konsumen dan 2 antrean. Saat saya menjalankan publisher beberapa kali dengan `cargo run`, terjadi lonjakan hingga 20 pesan, tetapi menurun secara cepat karena terdapat 3 subscriber yang bekerja secara paralel. Aktivitas pengiriman mencapai 4.0/s sementara konsumsi sekitar 3.0/s, menjelaskan mengapa beberapa pesan tertahan sejenak di antrean. Meskipun terdapat `thread::sleep` yang memperlambat subscriber, mekanisme load balancing membuat pemrosesan tetap efisien sehingga mengurangi penumpukan di antrean.
