@@ -17,3 +17,7 @@ AMQP (Advanced Message Queuing Protocol) adalah protokol open-standard communica
 - `5672` adalah port number yang digunakan secara default untuk menerima koneksi AMQP.
 
 Secara ringkas, URL ini berarti kita sedang terhubung ke AMQP message broker menggunakan username/password default dan port AMQP standar. 
+
+## Simulation slow subscriber:
+![Slow subscriber](images/slow_subscriber.png)
+Untuk simulasi slow subscriber, saya menjalankan perintah `cargo run` sebanyak 2 kali secara cepat. Grafik pada RabbitMQ menujukkan queues 2 yang merepresentasikan jumlah antrean aktif, dengan nilai ready 8 dan unacked 6 yang menunjukkan pesan tertahan dalam antrean. Terjadi proses perlambatan pemrosesan pesan dalam antrean karena penambahan `thread::sleep` pada subscriber. Ketika saya menjalankan publisher beberapa kali dengan `cargo run`, pesan dikirim dengan cepat ke dalam antrean, sementara subscriber tidak mampu memprosesnya dengan kecepatan yang sama. Akibatnya, terjadi ketidakseimbangan antara laju pengiriman dan pemrosesan, menyebabkan akumulasi pesan dalam status ready dan unacked meskipun jumlah antrean tetap 2.
